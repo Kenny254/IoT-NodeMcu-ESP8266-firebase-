@@ -6,12 +6,12 @@
  #include <ESP8266HTTPClient.h>
 
 //Firebase Authentication API credentials
-#define FIREBASE_HOST "esp8266-23d04.firebaseio.com"
-#define FIREBASE_AUTH "mhd0Pt7nK4dsY3NejhZxGxJ0BYV08uMNt2Ylmkzx"
+#define FIREBASE_HOST "esp8266-2qw2304.firebaseio.com"
+#define FIREBASE_AUTH "Secrets" // in the project settings, security secrets
 
 //Wifi configuration 
 #define WIFI_SSID "Wroom"
-#define WIFI_PASSWORD "forker220"
+#define WIFI_PASSWORD "for23kewe23r220"
 
 
 
