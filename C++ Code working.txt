@@ -1,0 +1,78 @@
+//Libraries used in this project
+#include <ESP8266WiFi.h>
+#include <SoftwareSerial.h>
+#include <FirebaseArduino.h>
+#include <ArduinoJson.h>
+ #include <ESP8266HTTPClient.h>
+
+//Firebase Authentication API credentials
+#define FIREBASE_HOST "esp8266-234re.firebaseio.com"
+#define FIREBASE_AUTH "mhd0Pt7nKwewewewexGxJ0BYV08uMNt2Ylmkzx" // Found in project settings >service account> Database secrets
+
+//Wifi configuration 
+#define WIFI_SSID "Wroom"
+#define WIFI_PASSWORD "Bo1rker23220"
+
+
+
+
+//Data capture methods from an Analog GPIO
+String myString;
+int vr = A0; // variable resistor connected
+int sdata = 0; // The variable resistor value will be stored in sdata.
+
+
+
+//Setup section that run once
+void setup()
+{
+  // Serial connection baudrate
+  Serial.begin(9600);
+
+  //Definitio of Analog pin as an input
+  pinMode(vr ,INPUT);
+  pinMode(D0,OUTPUT);
+  
+  // Connection of the wifi
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("connecting");
+  
+  //Tries reconnection for set miliseconds
+  while (WiFi.status() != WL_CONNECTED)
+      {
+    Serial.print("Reconnecting");
+    delay(500);
+      }
+
+  //Prints WiFi status
+  Serial.println();
+  Serial.print("connected: ");
+  Serial.println(WiFi.localIP());
+
+ //Syncronises with firebase Host and Authentication for access database.
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  
+//Posts data to firebase Real Time database.
+    Firebase.setString("Users ID/Value","Odhams Ronoh");
+    Firebase.setString("Tokens/Value","12");
+    Firebase.setString("Serial/Value","MAG304852NA");
+    Firebase.setString("National ID/Value","23432343");
+}
+
+// Accepts any loop operation to read/write data
+void loop()
+
+{
+ //Reads from sensor
+sdata = analogRead(vr);
+myString = String(sdata);
+
+//Prints current Data
+Serial.println(myString);
+
+//Updates on firebase Realtime database
+Firebase.setString("Variable/Value",myString);
+
+//Delays for a second before next loop
+delay(1000);
+}
