@@ -1,0 +1,54 @@
+
+#include <ESP8266WiFi.h>
+#include <FirebaseArduino.h>
+#include <SPI.h>
+#include <MFRC522.h>
+
+// Set these to run example.
+#define SS_PIN 4  //D2
+#define RST_PIN 5 //D1
+#define FIREBASE_HOST "esp8266-23d04.firebaseio.com" 
+#define FIREBASE_AUTH "mhd0Pt7nK4dsY3NejhZxGxJ0BYV08uMNt2Ylmkzx"
+#define WIFI_SSID "Wroom"
+#define WIFI_PASSWORD "forker220"
+
+
+MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance/object.
+int variable = 0;
+int n = 0;
+
+void setup() {
+
+Serial.begin(9600);   // Initiate a serial communication
+SPI.begin();      // Initiate  SPI bus
+mfrc522.PCD_Init();   // Initiate MFRC522
+Serial.println("Show your card:");
+
+  // connect to wifi.
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(500);
+  }
+  Serial.println();
+  Serial.print("connected: ");
+  Serial.println(WiFi.localIP());
+  
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+
+   
+}
+
+
+void loop() {
+
+FirebaseObject child = Firebase.get("28367945");
+JsonObject& obj = child.getJsonVariant();
+
+for (JsonObject::iterator it=obj.begin(); it!=obj.end(); ++it)
+{
+Serial.println(it->key);
+}
+delay(2000);
+}
